@@ -11,7 +11,6 @@ class RedisClient {
   async initialize() {
     this.client = await redis.createClient()
     .on('connect', () => {
-      console.log("Redis client connected to the server");
       this.connected = true;
     })
     .on('error', (err) => {
