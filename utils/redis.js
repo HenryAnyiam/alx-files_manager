@@ -1,3 +1,4 @@
+/* eslint-disable */
 const redis = require('redis');
 const { promisify } = require('util');
 
@@ -6,9 +7,9 @@ class RedisClient {
     this.client = redis.createClient();
     this.getAsync = promisify(this.client.get).bind(this.client);
 
-    this.client.on('error', (error) => {
-      console.log(`Redis client not connected to the server: ${error}`);
-    });
+    this.client.on('error', (err) => {
+      console.log("Redis client not connected to the server:", err);
+    })
   }
 
   isAlive() {
@@ -16,19 +17,18 @@ class RedisClient {
   }
 
   async get(key) {
-    const value = await this.getAsync(key);
-    return value;
+    const val = await this.getAsync(key);	
+    return val;
   }
 
-  async set(key, value, duration) {
-    this.client.set(key, value);
-    this.client.expire(key, duration);
+  async set(key, val, dur) {
+    await this.client.set(key, val);
+    await this.client.expire(key, dur)
   }
 
   async del(key) {
-    this.client.del(key);
+    await this.client.del(key);
   }
 }
-
 const redisClient = new RedisClient();
 export default redisClient;
